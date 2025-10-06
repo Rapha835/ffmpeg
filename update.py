@@ -21,7 +21,7 @@ TEMPLATE_STR = "templates/Dockerfile-template.{0}"
 # recent versions, we keep things manageable.
 # Note: the older builds will be preserved in the the docker hub registry.
 RELEASED_YEARS_AGO = 3
-KEEP_VERSION = "8."
+KEEP_VERSION = "7."
 
 
 def is_too_old(date_str, years):
