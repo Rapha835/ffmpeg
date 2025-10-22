@@ -924,7 +924,7 @@ function formatSRTTime(seconds) {
 // DÉMARRAGE
 // ========================================
 initDirs().then(() => {
-  const PORT = process.env.PORT || 8000;
+  const PORT = process.env.PORT || 8001;
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`✅ FFmpeg API Server running on port ${PORT}`);
     console.log(`📚 Documentation available at http://localhost:${PORT}/docs`);
