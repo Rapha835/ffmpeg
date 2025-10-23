@@ -7,6 +7,9 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
 const app = express();
+app.get('/docs', (req, res) => {
+  res.sendFile(path.join(__dirname, 'docs.html'));
+});
 const upload = multer({ dest: '/tmp/uploads/' });
 
 // Stockage en mémoire des jobs et webhooks
