@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>FFmpeg API Documentation</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; color: #333; }
+  h1, h2, h3 { color: #2c3e50; }
+  code { background: #eaeaea; padding: 2px 4px; border-radius: 3px; }
+  pre { background: #eaeaea; padding: 10px; border-radius: 5px; overflow-x: auto; }
+  .endpoint { margin-bottom: 20px; padding: 15px; background: #fff; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);}
+</style>
+</head>
+<body>
+<h1>FFmpeg API Documentation</h1>
+<p>Version: 2.0</p>
+
+<h2>Health Check</h2>
+<div class="endpoint">
+  <strong>GET /health</strong><br>
+  Vérifie que l'API tourne correctement.<br>
+  <code>Réponse:</code> <pre>{ "status": "ok", "service": "ffmpeg-api", "version": "2.0" }</pre>
+</div>
+
+<h2>Webhooks</h2>
+<div class="endpoint">
+  <strong>POST /api/v1/media/webhooks/register</strong><br>
+  Enregistre un webhook pour un fichier.<br>
+  <code>Body JSON:</code>
+  <pre>{
+  "file_id": "uuid-du-fichier",
+  "webhook_url": "https://example.com/webhook"
+}</pre>
+  <code>Réponse:</code> <pre>{ "registered": true, "file_id": "uuid-du-fichier" }</pre>
+</div>
+
+<h2>Storage / Upload</h2>
+<div class="endpoint">
+  <strong>POST /api/v1/media/storage</strong><br>
+  Upload d’un fichier (video/audio).<br>
+  <code>Form-data:</code> <pre>file: fichier à uploader<br>media_type: video|audio</pre>
+  <code>Réponse:</code>
+  <pre>{ "file_id": "uuid", "status": "ready", "media_type": "video" }</pre>
+</div>
+
+<div class="endpoint">
+  <strong>GET /api/v1/media/storage/:fileId/status</strong><br>
+  Vérifie le statut d’un fichier.<br>
+  <code>Réponse:</code> <pre>{ "status": "ready", "file_id": "uuid" }</pre>
+</div>
+
+<div class="endpoint">
+  <strong>GET /api/v1/media/storage/:fileId/progress</strong><br>
+  Récupère la progression d’un traitement.<br>
+  <code>Réponse:</code> <pre>{ "file_id": "uuid", "progress": 50, "status": "processing" }</pre>
+</div>
+
+<div class="endpoint">
+  <strong>GET /api/v1/media/storage/:fileId</strong><br>
+  Téléchargement du fichier.<br>
+  <code>Réponse:</code> Fichier téléchargé si ready.
+</div>
+
+<div class="endpoint">
+  <strong>DELETE /api/v1/media/storage/:fileIds</strong><br>
+  Supprime un ou plusieurs fichiers (virgule séparée).<br>
+  <code>Réponse:</code> <pre>{ "deleted": ["uuid1","uuid2"] }</pre>
+</div>
+
+<h2>Info / Metadata</h2>
+<div class="endpoint">
+  <strong>GET /api/v1/media/info/:fileId</strong><br>
+  Récupère les métadonnées d’un fichier via ffprobe.<br>
+  <code>Réponse:</code>
+  <pre>{
+  "duration": 12.34,
+  "resolution": "1920x1080",
+  "codec": "h264",
+  "bitrate": 500000,
+  "fps": 30
+}</pre>
+</div>
+
+<h2>Audio Tools</h2>
+<div class="endpoint">
+  <strong>POST /api/v1/media/audio-tools/tts/kokoro</strong><br>
+  Génération TTS simulée.<br>
+  <code>Form-url-encoded:</code> texte à synthétiser.<br>
+  <code>Réponse:</code> <pre>{ "file_id": "uuid", "status": "processing" }</pre>
+</div>
+
+<div class="endpoint">
+  <strong>POST /api/v1/media/audio-tools/normalize</strong><br>
+  Normalisation audio.<br>
+  <code>Form-url-encoded:</code>
+  <pre>audio_id: uuid<br>target_level: -16</pre>
+</div>
+
+<div class="endpoint">
+  <strong>POST /api/v1/media/audio-tools/denoise</strong><br>
+  Denoise audio.<br>
+  <code>Form-url-encoded:</code>
+  <pre>audio_id: uuid<br>strength: 0.5</pre>
+</div>
+
+<div class="endpoint">
+  <strong>POST /api/v1/media/audio-tools/ducking</strong><br>
+  Ducking audio sur vidéo.<br>
+  <code>Form-url-encoded:</code>
+  <pre>video_id: uuid<br>reduction_db: -12</pre>
+</div>
+
+<h2>Video Tools</h2>
+<div class="endpoint">
+  <strong>POST /api/v1/media/video-tools/generate/tts-captioned-video</strong><br>
+  Génère une vidéo avec audio et sous-titres.<br>
+  <code>Form-url-encoded:</code>
+  <pre>
+background_id: uuid
+audio_id: uuid
+text: "Texte des sous-titres"
+caption_config_font_size: 24
+caption_config_font_color: FFFFFF
+caption_style: default
+  </pre>
+  <code>Réponse:</code>
+  <pre>{ "file_id": "uuid", "status": "processing" }</pre>
+</div>
+
+</body>
+</html>
