@@ -16,14 +16,38 @@ const webhooks = new Map();
 const STORAGE_DIR = '/data/storage';
 const TEMP_DIR = '/data/temp';
 
-// Initialisation des dossiers
+// ========================================
+// INIT DIRS
+// ========================================
 async function initDirs() {
   await fs.mkdir(STORAGE_DIR, { recursive: true });
   await fs.mkdir(TEMP_DIR, { recursive: true });
 }
 
 // ========================================
-// DOCUMENTATION INTERACTIVE
+// MIDDLEWARES
+// ========================================
+
+// Timeout global : 5 min
+app.use((req, res, next) => {
+  req.setTimeout(300000, () => {
+    res.status(503).json({ error: 'Request timed out' });
+  });
+  next();
+});
+
+// JSON body parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal server error', details: err.message });
+});
+
+// ========================================
+// DOCUMENTATION
 // ========================================
 app.get('/docs', (req, res) => {
   res.send('<h1>FFmpeg API - Documentation (HTML complet supprimé pour la clarté)</h1>');
@@ -39,7 +63,7 @@ app.get('/health', (req, res) => {
 // ========================================
 // WEBHOOKS
 // ========================================
-app.post('/api/v1/media/webhooks/register', express.json(), (req, res) => {
+app.post('/api/v1/media/webhooks/register', (req, res) => {
   const { file_id, webhook_url } = req.body;
   webhooks.set(file_id, webhook_url);
   res.json({ registered: true, file_id });
@@ -62,7 +86,7 @@ async function triggerWebhook(fileId) {
 }
 
 // ========================================
-// STORAGE
+// STORAGE ROUTES
 // ========================================
 app.post('/api/v1/media/storage', upload.single('file'), async (req, res) => {
   try {
