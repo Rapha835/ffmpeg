@@ -1,4 +1,4 @@
-FROM jrottenberg/ffmpeg:8.0-ubuntu24
+FROM jrottenberg/ffmpeg:7.1.2-ubuntu2404
 
 # Installer Node.js runtime
 RUN apt-get update && apt-get install -y curl python3 python3-requests \
