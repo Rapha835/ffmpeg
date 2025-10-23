@@ -2,130 +2,557 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FFmpeg API Documentation</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; color: #333; }
-  h1, h2, h3 { color: #2c3e50; }
-  code { background: #eaeaea; padding: 2px 4px; border-radius: 3px; }
-  pre { background: #eaeaea; padding: 10px; border-radius: 5px; overflow-x: auto; }
-  .endpoint { margin-bottom: 20px; padding: 15px; background: #fff; border-radius: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);}
+  body { 
+    font-family: Arial, sans-serif; 
+    margin: 0;
+    padding: 20px; 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #333; 
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+  }
+  h1 { 
+    color: #667eea; 
+    border-bottom: 3px solid #667eea;
+    padding-bottom: 10px;
+  }
+  h2 { 
+    color: #2c3e50; 
+    margin-top: 40px;
+    border-left: 4px solid #667eea;
+    padding-left: 15px;
+  }
+  h3 { 
+    color: #34495e; 
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 10px;
+  }
+  .badge.new { background: #27ae60; color: white; }
+  .badge.get { background: #3498db; color: white; }
+  .badge.post { background: #e67e22; color: white; }
+  .badge.delete { background: #e74c3c; color: white; }
+  
+  code { 
+    background: #f8f9fa; 
+    padding: 2px 6px; 
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    color: #e83e8c;
+  }
+  pre { 
+    background: #2d3748; 
+    color: #e2e8f0;
+    padding: 15px; 
+    border-radius: 5px; 
+    overflow-x: auto;
+    border-left: 4px solid #667eea;
+  }
+  .endpoint { 
+    margin-bottom: 30px; 
+    padding: 20px; 
+    background: #f8f9fa; 
+    border-radius: 8px; 
+    border: 1px solid #e9ecef;
+    transition: all 0.3s ease;
+  }
+  .endpoint:hover {
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+    border-color: #667eea;
+  }
+  .endpoint-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 10px;
+  }
+  .endpoint-desc {
+    color: #555;
+    margin-bottom: 15px;
+  }
+  .param-section {
+    margin-top: 10px;
+  }
+  .param-title {
+    font-weight: bold;
+    color: #495057;
+    margin-bottom: 5px;
+  }
+  .toc {
+    background: #f1f3f5;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+  }
+  .toc ul {
+    list-style: none;
+    padding-left: 0;
+  }
+  .toc li {
+    margin: 8px 0;
+  }
+  .toc a {
+    color: #667eea;
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  .toc a:hover {
+    color: #764ba2;
+    text-decoration: underline;
+  }
 </style>
 </head>
 <body>
-<h1>FFmpeg API Documentation</h1>
-<p>Version: 2.0</p>
+<div class="container">
+<h1>📹 FFmpeg API Documentation</h1>
+<p><strong>Version:</strong> 2.0 | <strong>Dernière mise à jour:</strong> Octobre 2025</p>
 
-<h2>Health Check</h2>
-<div class="endpoint">
-  <strong>GET /health</strong><br>
-  Vérifie que l'API tourne correctement.<br>
-  <code>Réponse:</code> <pre>{ "status": "ok", "service": "ffmpeg-api", "version": "2.0" }</pre>
+<div class="toc">
+  <h3>📑 Table des matières</h3>
+  <ul>
+    <li><a href="#health">Health Check</a></li>
+    <li><a href="#webhooks">Webhooks</a></li>
+    <li><a href="#storage">Storage / Upload</a></li>
+    <li><a href="#info">Info / Metadata</a></li>
+    <li><a href="#audio">Audio Tools</a></li>
+    <li><a href="#video">Video Tools</a></li>
+    <li><a href="#assembly">🆕 Assemblage Vidéo</a></li>
+    <li><a href="#effects">🆕 Effets & Filtres</a></li>
+    <li><a href="#composition">🆕 Composition Avancée</a></li>
+  </ul>
 </div>
 
-<h2>Webhooks</h2>
+<h2 id="health">🏥 Health Check</h2>
 <div class="endpoint">
-  <strong>POST /api/v1/media/webhooks/register</strong><br>
-  Enregistre un webhook pour un fichier.<br>
-  <code>Body JSON:</code>
-  <pre>{
+  <div class="endpoint-title">
+    <span class="badge get">GET</span> /health
+  </div>
+  <div class="endpoint-desc">Vérifie que l'API tourne correctement.</div>
+  <div class="param-section">
+    <div class="param-title">Réponse:</div>
+    <pre>{ 
+  "status": "ok", 
+  "service": "ffmpeg-api", 
+  "version": "2.0" 
+}</pre>
+  </div>
+</div>
+
+<h2 id="webhooks">🔔 Webhooks</h2>
+<div class="endpoint">
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> /api/v1/media/webhooks/register
+  </div>
+  <div class="endpoint-desc">Enregistre un webhook pour être notifié quand un job est terminé.</div>
+  <div class="param-section">
+    <div class="param-title">Body JSON:</div>
+    <pre>{
   "file_id": "uuid-du-fichier",
   "webhook_url": "https://example.com/webhook"
 }</pre>
-  <code>Réponse:</code> <pre>{ "registered": true, "file_id": "uuid-du-fichier" }</pre>
+  </div>
+  <div class="param-section">
+    <div class="param-title">Réponse:</div>
+    <pre>{ 
+  "registered": true, 
+  "file_id": "uuid-du-fichier" 
+}</pre>
+  </div>
 </div>
 
-<h2>Storage / Upload</h2>
+<h2 id="storage">💾 Storage / Upload</h2>
+
 <div class="endpoint">
-  <strong>POST /api/v1/media/storage</strong><br>
-  Upload d’un fichier (video/audio).<br>
-  <code>Form-data:</code> <pre>file: fichier à uploader<br>media_type: video|audio</pre>
-  <code>Réponse:</code>
-  <pre>{ "file_id": "uuid", "status": "ready", "media_type": "video" }</pre>
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> /api/v1/media/storage
+  </div>
+  <div class="endpoint-desc">Upload d'un fichier (vidéo, audio ou image).</div>
+  <div class="param-section">
+    <div class="param-title">Form-data:</div>
+    <pre>file: fichier à uploader
+media_type: video|audio|image</pre>
+  </div>
+  <div class="param-section">
+    <div class="param-title">Réponse:</div>
+    <pre>{ 
+  "file_id": "uuid", 
+  "status": "ready", 
+  "media_type": "video" 
+}</pre>
+  </div>
 </div>
 
 <div class="endpoint">
-  <strong>GET /api/v1/media/storage/:fileId/status</strong><br>
-  Vérifie le statut d’un fichier.<br>
-  <code>Réponse:</code> <pre>{ "status": "ready", "file_id": "uuid" }</pre>
+  <div class="endpoint-title">
+    <span class="badge get">GET</span> /api/v1/media/storage/:fileId/status
+  </div>
+  <div class="endpoint-desc">Vérifie le statut d'un fichier (ready, processing, failed).</div>
+  <div class="param-section">
+    <div class="param-title">Réponse:</div>
+    <pre>{ 
+  "status": "ready", 
+  "file_id": "uuid" 
+}</pre>
+  </div>
 </div>
 
 <div class="endpoint">
-  <strong>GET /api/v1/media/storage/:fileId/progress</strong><br>
-  Récupère la progression d’un traitement.<br>
-  <code>Réponse:</code> <pre>{ "file_id": "uuid", "progress": 50, "status": "processing" }</pre>
+  <div class="endpoint-title">
+    <span class="badge get">GET</span> /api/v1/media/storage/:fileId/progress
+  </div>
+  <div class="endpoint-desc">Récupère la progression d'un traitement en cours.</div>
+  <div class="param-section">
+    <div class="param-title">Réponse:</div>
+    <pre>{ 
+  "file_id": "uuid", 
+  "progress": 50, 
+  "status": "processing" 
+}</pre>
+  </div>
 </div>
 
 <div class="endpoint">
-  <strong>GET /api/v1/media/storage/:fileId</strong><br>
-  Téléchargement du fichier.<br>
-  <code>Réponse:</code> Fichier téléchargé si ready.
+  <div class="endpoint-title">
+    <span class="badge get">GET</span> /api/v1/media/storage/:fileId
+  </div>
+  <div class="endpoint-desc">Télécharge le fichier traité.</div>
+  <div class="param-section">
+    <div class="param-title">Réponse:</div>
+    Flux binaire du fichier si status = ready
+  </div>
 </div>
 
 <div class="endpoint">
-  <strong>DELETE /api/v1/media/storage/:fileIds</strong><br>
-  Supprime un ou plusieurs fichiers (virgule séparée).<br>
-  <code>Réponse:</code> <pre>{ "deleted": ["uuid1","uuid2"] }</pre>
+  <div class="endpoint-title">
+    <span class="badge delete">DELETE</span> /api/v1/media/storage/:fileIds
+  </div>
+  <div class="endpoint-desc">Supprime un ou plusieurs fichiers (séparés par virgule).</div>
+  <div class="param-section">
+    <div class="param-title">Exemple:</div>
+    <code>DELETE /api/v1/media/storage/uuid1,uuid2,uuid3</code>
+  </div>
+  <div class="param-section">
+    <div class="param-title">Réponse:</div>
+    <pre>{ 
+  "deleted": ["uuid1", "uuid2", "uuid3"] 
+}</pre>
+  </div>
 </div>
 
-<h2>Info / Metadata</h2>
+<h2 id="info">ℹ️ Info / Metadata</h2>
+
 <div class="endpoint">
-  <strong>GET /api/v1/media/info/:fileId</strong><br>
-  Récupère les métadonnées d’un fichier via ffprobe.<br>
-  <code>Réponse:</code>
-  <pre>{
+  <div class="endpoint-title">
+    <span class="badge get">GET</span> /api/v1/media/info/:fileId
+  </div>
+  <div class="endpoint-desc">Récupère les métadonnées d'un fichier via ffprobe.</div>
+  <div class="param-section">
+    <div class="param-title">Réponse:</div>
+    <pre>{
   "duration": 12.34,
   "resolution": "1920x1080",
   "codec": "h264",
   "bitrate": 500000,
   "fps": 30
 }</pre>
+  </div>
 </div>
 
-<h2>Audio Tools</h2>
+<h2 id="audio">🎵 Audio Tools</h2>
+
 <div class="endpoint">
-  <strong>POST /api/v1/media/audio-tools/tts/kokoro</strong><br>
-  Génération TTS simulée.<br>
-  <code>Form-url-encoded:</code> texte à synthétiser.<br>
-  <code>Réponse:</code> <pre>{ "file_id": "uuid", "status": "processing" }</pre>
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> /api/v1/media/audio-tools/tts/kokoro
+  </div>
+  <div class="endpoint-desc">Génération TTS (Text-to-Speech) simulée.</div>
+  <div class="param-section">
+    <div class="param-title">Form-urlencoded:</div>
+    <pre>text: "Texte à synthétiser"</pre>
+  </div>
+  <div class="param-section">
+    <div class="param-title">Réponse:</div>
+    <pre>{ 
+  "file_id": "uuid", 
+  "status": "processing" 
+}</pre>
+  </div>
 </div>
 
 <div class="endpoint">
-  <strong>POST /api/v1/media/audio-tools/normalize</strong><br>
-  Normalisation audio.<br>
-  <code>Form-url-encoded:</code>
-  <pre>audio_id: uuid<br>target_level: -16</pre>
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> /api/v1/media/audio-tools/normalize
+  </div>
+  <div class="endpoint-desc">Normalise le volume audio à un niveau cible.</div>
+  <div class="param-section">
+    <div class="param-title">Form-urlencoded:</div>
+    <pre>audio_id: uuid
+target_level: -16  (optionnel, défaut: -16 LUFS)</pre>
+  </div>
 </div>
 
 <div class="endpoint">
-  <strong>POST /api/v1/media/audio-tools/denoise</strong><br>
-  Denoise audio.<br>
-  <code>Form-url-encoded:</code>
-  <pre>audio_id: uuid<br>strength: 0.5</pre>
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> /api/v1/media/audio-tools/denoise
+  </div>
+  <div class="endpoint-desc">Réduit le bruit de fond d'un fichier audio.</div>
+  <div class="param-section">
+    <div class="param-title">Form-urlencoded:</div>
+    <pre>audio_id: uuid
+strength: 0.5  (0.0 à 1.0)</pre>
+  </div>
 </div>
 
 <div class="endpoint">
-  <strong>POST /api/v1/media/audio-tools/ducking</strong><br>
-  Ducking audio sur vidéo.<br>
-  <code>Form-url-encoded:</code>
-  <pre>video_id: uuid<br>reduction_db: -12</pre>
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> /api/v1/media/audio-tools/ducking
+  </div>
+  <div class="endpoint-desc">Applique le ducking audio sur une vidéo (réduit la musique quand il y a des voix).</div>
+  <div class="param-section">
+    <div class="param-title">Form-urlencoded:</div>
+    <pre>video_id: uuid
+reduction_db: -12  (réduction en décibels)</pre>
+  </div>
 </div>
 
-<h2>Video Tools</h2>
+<h2 id="video">🎬 Video Tools (Existants)</h2>
+
 <div class="endpoint">
-  <strong>POST /api/v1/media/video-tools/generate/tts-captioned-video</strong><br>
-  Génère une vidéo avec audio et sous-titres.<br>
-  <code>Form-url-encoded:</code>
-  <pre>
-background_id: uuid
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> /api/v1/media/video-tools/generate/tts-captioned-video
+  </div>
+  <div class="endpoint-desc">Génère une vidéo avec image de fond, audio et sous-titres.</div>
+  <div class="param-section">
+    <div class="param-title">Form-urlencoded:</div>
+    <pre>background_id: uuid
 audio_id: uuid
 text: "Texte des sous-titres"
-caption_config_font_size: 24
-caption_config_font_color: FFFFFF
-caption_style: default
-  </pre>
-  <code>Réponse:</code>
-  <pre>{ "file_id": "uuid", "status": "processing" }</pre>
+caption_config_font_size: 24  (optionnel)
+caption_config_font_color: FFFFFF  (hex sans #)
+caption_style: default  (optionnel)</pre>
+  </div>
+  <div class="param-section">
+    <div class="param-title">Réponse:</div>
+    <pre>{ 
+  "file_id": "uuid", 
+  "status": "processing" 
+}</pre>
+  </div>
 </div>
 
+<h2 id="assembly">🆕 Assemblage Vidéo</h2>
+
+<div class="endpoint">
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> <span class="badge new">NEW</span> /api/v1/media/video-tools/concat
+  </div>
+  <div class="endpoint-desc">Assemble plusieurs vidéos en une seule avec transitions optionnelles.</div>
+  <div class="param-section">
+    <div class="param-title">Body JSON:</div>
+    <pre>{
+  "video_ids": ["uuid1", "uuid2", "uuid3"],
+  "transition": "fade",  // none, fade, dissolve, wipeleft, wiperight
+  "transition_duration": 1  // en secondes
+}</pre>
+  </div>
+  <div class="param-section">
+    <div class="param-title">Transitions disponibles:</div>
+    <code>none</code> (concat simple), <code>fade</code>, <code>dissolve</code>, 
+    <code>wipeleft</code>, <code>wiperight</code>, <code>wipeup</code>, 
+    <code>wipedown</code>, <code>slideleft</code>, <code>slideright</code>
+  </div>
+</div>
+
+<div class="endpoint">
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> <span class="badge new">NEW</span> /api/v1/media/video-tools/merge-audio
+  </div>
+  <div class="endpoint-desc">Fusionne un audio avec une vidéo (remplace ou mixe l'audio existant).</div>
+  <div class="param-section">
+    <div class="param-title">Body JSON:</div>
+    <pre>{
+  "video_id": "uuid",
+  "audio_id": "uuid",
+  "audio_volume": 1.0,  // 0.0 à 2.0
+  "replace_audio": true  // true = remplace, false = mixe
+}</pre>
+  </div>
+</div>
+
+<h2 id="effects">🆕 Effets & Filtres</h2>
+
+<div class="endpoint">
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> <span class="badge new">NEW</span> /api/v1/media/video-tools/ken-burns
+  </div>
+  <div class="endpoint-desc">Applique un effet zoom/pan (Ken Burns) sur une image statique.</div>
+  <div class="param-section">
+    <div class="param-title">Body JSON:</div>
+    <pre>{
+  "image_id": "uuid",
+  "duration": 5,  // durée en secondes
+  "zoom_start": 1.0,
+  "zoom_end": 1.2,
+  "direction": "center"  // center, left, right, top, bottom
+}</pre>
+  </div>
+  <div class="param-section">
+    <div class="param-title">Cas d'usage:</div>
+    Transformer une image statique en vidéo animée pour Instagram/TikTok
+  </div>
+</div>
+
+<div class="endpoint">
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> <span class="badge new">NEW</span> /api/v1/media/video-tools/blur-background
+  </div>
+  <div class="endpoint-desc">Crée un arrière-plan flouté style "portrait mode" pour format vertical.</div>
+  <div class="param-section">
+    <div class="param-title">Body JSON:</div>
+    <pre>{
+  "image_id": "uuid",
+  "blur_strength": 20,  // intensité du flou
+  "scale": 0.8,  // taille de l'image au premier plan (0.0-1.0)
+  "output_width": 1080,
+  "output_height": 1920
+}</pre>
+  </div>
+  <div class="param-section">
+    <div class="param-title">Cas d'usage:</div>
+    Adapter une image paysage en format vertical 9:16 pour TikTok/Reels
+  </div>
+</div>
+
+<div class="endpoint">
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> <span class="badge new">NEW</span> /api/v1/media/video-tools/add-overlay
+  </div>
+  <div class="endpoint-desc">Ajoute un logo ou watermark sur une vidéo.</div>
+  <div class="param-section">
+    <div class="param-title">Body JSON:</div>
+    <pre>{
+  "video_id": "uuid",
+  "overlay_id": "uuid",  // image du logo
+  "position": "top-right",  // top-left, top-right, bottom-left, bottom-right, center
+  "margin": 20,  // marge en pixels
+  "scale": 1.0  // taille du logo (0.0-2.0)
+}</pre>
+  </div>
+</div>
+
+<div class="endpoint">
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> <span class="badge new">NEW</span> /api/v1/media/video-tools/apply-filter
+  </div>
+  <div class="endpoint-desc">Applique des filtres vidéo (luminosité, contraste, saturation, flou, netteté).</div>
+  <div class="param-section">
+    <div class="param-title">Body JSON:</div>
+    <pre>{
+  "video_id": "uuid",
+  "filter_type": "brightness",  // brightness, contrast, saturation, blur, sharpen
+  "intensity": 1.2  // multiplicateur (1.0 = aucun effet)
+}</pre>
+  </div>
+  <div class="param-section">
+    <div class="param-title">Filtres disponibles:</div>
+    <ul style="margin-top: 5px; padding-left: 20px;">
+      <li><code>brightness</code> - Luminosité (0.5-2.0)</li>
+      <li><code>contrast</code> - Contraste (0.5-2.0)</li>
+      <li><code>saturation</code> - Saturation (0.0-3.0)</li>
+      <li><code>blur</code> - Flou artistique (0.0-10.0)</li>
+      <li><code>sharpen</code> - Netteté (0.0-5.0)</li>
+    </ul>
+  </div>
+</div>
+
+<div class="endpoint">
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> <span class="badge new">NEW</span> /api/v1/media/video-tools/add-fade
+  </div>
+  <div class="endpoint-desc">Ajoute des transitions fade in/out à une vidéo.</div>
+  <div class="param-section">
+    <div class="param-title">Body JSON:</div>
+    <pre>{
+  "video_id": "uuid",
+  "fade_in_duration": 1,  // durée en secondes
+  "fade_out_duration": 1,
+  "fade_type": "both"  // in, out, both
+}</pre>
+  </div>
+</div>
+
+<h2 id="composition">🆕 Composition Avancée</h2>
+
+<div class="endpoint">
+  <div class="endpoint-title">
+    <span class="badge post">POST</span> <span class="badge new">NEW</span> /api/v1/media/video-tools/compose
+  </div>
+  <div class="endpoint-desc">Crée une vidéo complète à partir d'une image, un audio et des sous-titres avec background personnalisé.</div>
+  <div class="param-section">
+    <div class="param-title">Body JSON:</div>
+    <pre>{
+  "image_id": "uuid",
+  "audio_id": "uuid",
+  "subtitle_text": "Texte des sous-titres. Phrase deux.",
+  "background_color": "000000",  // couleur hex sans #
+  "caption_style": {
+    "font_size": 24,
+    "font_color": "FFFFFF",
+    "position": "bottom",  // top, bottom
+    "outline": 2  // épaisseur du contour
+  }
+}</pre>
+  </div>
+  <div class="param-section">
+    <div class="param-title">Différence avec tts-captioned-video:</div>
+    Plus flexible avec contrôle de la couleur de fond et style de sous-titres avancé
+  </div>
+</div>
+
+<hr style="margin: 40px 0; border: none; border-top: 2px solid #e9ecef;">
+
+<h2>💡 Workflow Recommandé pour N8N</h2>
+<div style="background: #fff3cd; padding: 20px; border-radius: 8px; border-left: 4px solid #ffc107;">
+  <h3>Exemple : Créer une vidéo complète</h3>
+  <ol>
+    <li>📤 <strong>Upload image</strong> → <code>POST /api/v1/media/storage</code></li>
+    <li>📤 <strong>Upload audio</strong> → <code>POST /api/v1/media/storage</code></li>
+    <li>🎨 <strong>Appliquer blur background</strong> → <code>POST /api/v1/media/video-tools/blur-background</code></li>
+    <li>🎬 <strong>Composer vidéo</strong> → <code>POST /api/v1/media/video-tools/compose</code></li>
+    <li>🏷️ <strong>Ajouter logo</strong> → <code>POST /api/v1/media/video-tools/add-overlay</code></li>
+    <li>✨ <strong>Ajouter fade</strong> → <code>POST /api/v1/media/video-tools/add-fade</code></li>
+    <li>📥 <strong>Télécharger</strong> → <code>GET /api/v1/media/storage/:fileId</code></li>
+  </ol>
+</div>
+
+<div style="margin-top: 30px; padding: 20px; background: #d1ecf1; border-radius: 8px; border-left: 4px solid #17a2b8;">
+  <h3>⚡ Astuces</h3>
+  <ul>
+    <li>Utilisez les <strong>webhooks</strong> pour automatiser les workflows longs</li>
+    <li>Vérifiez toujours le <strong>status</strong> avant de télécharger</li>
+    <li>Supprimez les fichiers temporaires avec <strong>DELETE</strong> pour économiser l'espace</li>
+    <li>Les transitions <code>xfade</code> sont gourmandes, privilégiez <code>none</code> pour les concat simples</li>
+  </ul>
+</div>
+
+<footer style="margin-top: 50px; padding-top: 20px; border-top: 2px solid #e9ecef; text-align: center; color: #6c757d;">
+  <p>FFmpeg API v2.0 - Documentation mise à jour octobre 2025</p>
+  <p>🚀 Développé pour automatisation vidéo avec N8N</p>
+</footer>
+
+</div>
 </body>
 </html>
