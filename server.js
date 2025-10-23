@@ -1,11 +1,10 @@
-// server.js - API Node.js complète pour FFmpeg
+// server.js - FFmpeg API Node.js complet compatible Node 20+
 const express = require('express');
 const multer = require('multer');
 const { spawn } = require('child_process');
 const fs = require('fs').promises;
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
-const fetch = require('node-fetch');
 
 const app = express();
 const upload = multer({ dest: '/tmp/uploads/' });
@@ -16,38 +15,14 @@ const webhooks = new Map();
 const STORAGE_DIR = '/data/storage';
 const TEMP_DIR = '/data/temp';
 
-// ========================================
-// INIT DIRS
-// ========================================
+// Initialisation des dossiers
 async function initDirs() {
   await fs.mkdir(STORAGE_DIR, { recursive: true });
   await fs.mkdir(TEMP_DIR, { recursive: true });
 }
 
 // ========================================
-// MIDDLEWARES
-// ========================================
-
-// Timeout global : 5 min
-app.use((req, res, next) => {
-  req.setTimeout(300000, () => {
-    res.status(503).json({ error: 'Request timed out' });
-  });
-  next();
-});
-
-// JSON body parser
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Error handler
-app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
-  res.status(500).json({ error: 'Internal server error', details: err.message });
-});
-
-// ========================================
-// DOCUMENTATION
+// DOCUMENTATION INTERACTIVE
 // ========================================
 app.get('/docs', (req, res) => {
   res.send('<h1>FFmpeg API - Documentation (HTML complet supprimé pour la clarté)</h1>');
@@ -63,7 +38,7 @@ app.get('/health', (req, res) => {
 // ========================================
 // WEBHOOKS
 // ========================================
-app.post('/api/v1/media/webhooks/register', (req, res) => {
+app.post('/api/v1/media/webhooks/register', express.json(), (req, res) => {
   const { file_id, webhook_url } = req.body;
   webhooks.set(file_id, webhook_url);
   res.json({ registered: true, file_id });
@@ -86,7 +61,7 @@ async function triggerWebhook(fileId) {
 }
 
 // ========================================
-// STORAGE ROUTES
+// STORAGE
 // ========================================
 app.post('/api/v1/media/storage', upload.single('file'), async (req, res) => {
   try {
@@ -321,7 +296,7 @@ app.post('/api/v1/media/video-tools/generate/tts-captioned-video',
 // ========================================
 // SERVER INIT
 // ========================================
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8001;
 initDirs().then(() => {
   app.listen(PORT, () => console.log(`FFmpeg API running on port ${PORT}`));
 });
