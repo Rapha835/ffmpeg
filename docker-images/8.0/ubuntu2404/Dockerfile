@@ -1,32 +1,31 @@
-# Base FFmpeg
 FROM jrottenberg/ffmpeg:7.1.2-ubuntu2404
 
-# Installer Node.js runtime + utilitaires nécessaires
-RUN apt-get update && apt-get install -y \
-        curl \
-        python3 \
-        python3-requests \
+# Installer Node.js runtime
+RUN apt-get update && apt-get install -y curl python3 python3-requests \
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Créer le dossier de l'app
+# Crée un utilisateur non-root
+RUN useradd -m appuser
+USER appuser
+
+# Crée le dossier de l'app
 WORKDIR /app
-
-# Copier package.json / package-lock.json et installer dépendances
-COPY package*.json ./
+COPY --chown=appuser:appuser package*.json ./
 RUN npm install --production
+COPY --chown=appuser:appuser . .
 
-# Copier tout le code de l'application
-COPY . .
-
-# Créer dossiers de stockage / temp si besoin
-RUN mkdir -p /data/storage /data/temp
-
-# Définir le port de l'API
+# Port de l'API
 ENV PORT=8001
 EXPOSE 8001
 
-# Lancer le serveur Node.js
+# Points de montage pour persistance
+VOLUME ["/data/storage", "/data/temp"]
+
+# Healthcheck pour s'assurer que le serveur tourne
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s \
+  CMD curl -f http://localhost:8001/health || exit 1
+
+# Lancement de ton serveur Node
 CMD ["npm", "start"]
